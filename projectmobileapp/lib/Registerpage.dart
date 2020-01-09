@@ -1,139 +1,154 @@
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'main.dart';
 
 
-class Registerpage extends StatelessWidget {
-  
+class Registerpage extends StatefulWidget {
+  @override
+  RegisterpageState createState() {
+    return RegisterpageState();
+  }
+}
+
+class RegisterpageState extends State<Registerpage> {
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        
         title: Center(
-          child: Text("REGISTRATION",
-            style: TextStyle(
-                fontSize: 28.0,
-                fontWeight: FontWeight.bold,
-                fontFamily: "Pacifico"
-        ),)
-        ),
+            child: Text(
+          "Registration",
+          style: TextStyle(
+              fontSize: 28.0,
+              fontWeight: FontWeight.bold,
+              fontFamily: "Tangerine"),
+        )),
       ),
       resizeToAvoidBottomPadding: false,
-      body: Column(
-      
-        children: <Widget>[
-          new Container(
-            child: new Text("   ",
+      body: Form(
+        key: _formKey,
+        child: Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+            colorFilter: new ColorFilter.mode(
+                Colors.green.withOpacity(0.4), BlendMode.dstATop),
+            image: AssetImage("images/dogimages.jpg"),
+            fit: BoxFit.cover,
+          )),
+          child: Column(
+            children: <Widget>[
+              new Container(
+             padding: EdgeInsets.only( top: 80),
+            child: new Text(" Dog Up  ",
                 style: TextStyle(
-              ),),
-          ),
-          
-          
-//TEXTFIELD FOR THE EMAIL
+                  decoration: TextDecoration.underline,
+                  letterSpacing: 10,
+                  fontFamily: "Pacifico",
+                  fontSize: 70,
+                  color: Colors.black54,
 
-         new Padding(
-           padding: EdgeInsets.only(left: 50.0, right: 50.0),
-            child: new TextField(
-              controller: email,
-              decoration: new InputDecoration(
-                labelText: 'Enter email',
-                prefixIcon: Icon(Icons.email),
-                 border: new OutlineInputBorder(
-                          borderRadius: new BorderRadius.circular(25.0),
-                          borderSide: new BorderSide(
-                          ),
-                        ),
-              ),
-              
-            ),
-          ), 
-        
-          new Container(
-            child: new Text("   ",
-                style: TextStyle(
-              ),),
-          ),
-
-//TEXTFIELD FOR THE PASSWORD
-
-          new Padding(
-            padding: EdgeInsets.only(left: 50.0, right: 50.0),
-            child: new TextField(
-              controller: password,
-              decoration: new InputDecoration(
-                labelText: 'Enter password',
-                prefixIcon: Icon(Icons.lock),
-                 border: new OutlineInputBorder(
-                          borderRadius: new BorderRadius.circular(25.0),
-                          borderSide: new BorderSide(
-                          ),
-                        ),
               ),
             ),
           ),
-          new Container(
-            child: new Text("   ",
-                style: TextStyle(
-              ),),
-          ),
-          
-
-
-//BUTTON FOR LOGIN BUTTON WITH FUNCTION
-
-          new ButtonTheme(
-            minWidth: 305.0,
-             height: 60.0,
-            child: new RaisedButton(
- 
-               onPressed: (){
-                 insertdata();
-                 Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
-                 
-               },
-               shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
-               color: Colors.purple,
-               child: Text("SAVE",
-                style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-                fontFamily: "pacifico",
-                color: Colors.white,
+              new Padding(
+                padding: EdgeInsets.only(left: 50.0, right: 50.0, top: 50),
+                child: new TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return "please enter username";
+                    }
+                    return null;
+                  },
+                  controller: email,
+                  decoration: new InputDecoration(
+                    labelText: 'Create new email',
+                    prefixIcon: Icon(Icons.email),
+                    border: new OutlineInputBorder(
+                      borderRadius: new BorderRadius.circular(25.0),
+                      borderSide: new BorderSide(),
+                    ),
+                  ),
+                ),
               ),
-              
+              new Container(
+                child: new Text(
+                  "   ",
+                  style: TextStyle(),
+                ),
               ),
-            ),
-            
-          ),
-           new Container(
-            child: new Text("  ",
-                
-            ),
-          ),
-           new Container(
-            child: new Text("  ",
-                
-            ),
-          ),
-          new Center(
-            child: new Text("💜",
-                style: TextStyle(
-                fontSize: 150.0,
-                fontWeight: FontWeight.bold,
-                fontFamily: "Pacifico"
+              new Padding(
+                padding: EdgeInsets.only(left: 50.0, right: 50.0),
+                child: new TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return "please enter password";
+                    }
+                    return null;
+                  },
+                  controller: password,
+                  decoration: new InputDecoration(
+                    labelText: 'Create new password',
+                    prefixIcon: Icon(Icons.lock),
+                    border: new OutlineInputBorder(
+                      borderRadius: new BorderRadius.circular(25.0),
+                      borderSide: new BorderSide(),
+                    ),
+                  ),
+                ),
               ),
-            ),
+              new Container(
+                child: new Text(
+                  "   ",
+                  style: TextStyle(),
+                ),
+              ),
+              new Container (
+                padding: EdgeInsets.only(top: 50),
+                child: ButtonTheme(
+                minWidth: 305.0,
+                height: 60.0,
+                child: new RaisedButton(
+                  onPressed: () {
+                    if (_formKey.currentState.validate()) {
+                      insertdata();
+
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MyHomePage()));
+                    }
+                  },
+                  shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(15.0)),
+                  child: Text(
+                    "Save",
+                    style: TextStyle(
+                      fontSize: 50.0,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Tangerine",
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+              ),
           ),
-          
-  
-        ],
+              new Container(
+                child: new Text(
+                  "  ",
+                ),
+              ),
+              new Container(
+                child: new Text(
+                  "  ",
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
-       
     );
   }
 
@@ -141,18 +156,14 @@ class Registerpage extends StatelessWidget {
   final email = TextEditingController();
   final usertype = String;
   final address = TextEditingController();
-  
-  void insertdata(){
-    
-    var url="http://192.168.18.54/LoginAPI/addData.php";
 
-     
+  void insertdata() {
+    var url = "http://192.168.18.54/LoginAPI/addData.php";
 
     http.post(url, body: {
       "password": password.text,
       "email": email.text,
       "usertype": "member",
     });
-  } 
-  
+  }
 }
