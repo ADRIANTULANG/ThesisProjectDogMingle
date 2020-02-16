@@ -11,6 +11,7 @@ class Registerpage extends StatefulWidget {
 }
 
 class RegisterpageState extends State<Registerpage> {
+  String address = '';
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -105,6 +106,42 @@ class RegisterpageState extends State<Registerpage> {
                   style: TextStyle(),
                 ),
               ),
+              DropdownButton<String>(
+                            
+                            value: address,
+                            icon: Icon(Icons.arrow_downward),
+                            iconSize: 24,
+                            elevation: 16,
+                            hint: Text(" Input Address",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                )),
+                            style: TextStyle(color: Colors.black),
+                            underline: Container(
+                              height: 2,
+                              width: 5,
+                              color: Colors.grey,
+                            ),
+                            isExpanded: false,
+                            onChanged: (String newValue) {
+                              setState(() {
+                                address = newValue;
+                              });
+                            },
+                            items: <String>['','Limketkai Center', 'Shopwise','Department Of Environment And Natural Resources','Grand Caprice', 'Security Bank','Travelers Pod','M.Lhuilier Osmena, CDO']
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+              new Container(
+                child: new Text(
+                  "   ",
+                  style: TextStyle(),
+                ),
+              ),
               new Container (
                 padding: EdgeInsets.only(top: 50),
                 child: ButtonTheme(
@@ -155,15 +192,16 @@ class RegisterpageState extends State<Registerpage> {
   final password = TextEditingController();
   final email = TextEditingController();
   final usertype = String;
-  final address = TextEditingController();
+  
 
   void insertdata() {
-    var url = "http://192.168.18.54/LoginAPI/addData.php";
+    var url = "http://172.20.41.130/LoginAPI/addData.php";
 
     http.post(url, body: {
       "password": password.text,
       "email": email.text,
       "usertype": "member",
+      "address": address,
     });
   }
 }

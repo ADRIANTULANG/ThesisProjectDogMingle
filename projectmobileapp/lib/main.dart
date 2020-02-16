@@ -4,6 +4,9 @@ import 'package:http/http.dart' as http;
 import 'package:projectmobileapp/Searchpage.dart';
 import 'Registerpage.dart';
 import 'Searchpage.dart';
+import 'Userprofile.dart';
+import 'Messagingpage.dart';
+
 
 void main() {
  
@@ -13,12 +16,13 @@ void main() {
   ));
 }
 
+
 String email='';
 String userid='';
+String dogtype= '';
+String address= '';
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  
   Widget build(BuildContext context) {
     return MaterialApp(
 
@@ -44,9 +48,6 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-
-
-
 class _MyHomePageState extends State<MyHomePage> {
 
   TextEditingController emailinput = new TextEditingController();
@@ -57,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<dynamic> _login() async{
    
-   final response = await http.post("http://192.168.18.54/LoginAPI/login.php", body: {
+   final response = await http.post("http://172.20.41.130/LoginAPI/login.php", body: {
     "email": emailinput.text,
     "password": password.text,
    });
@@ -73,12 +74,14 @@ class _MyHomePageState extends State<MyHomePage> {
        Navigator.push(context, MaterialPageRoute(builder: (context) => Adminpage()));
 
      }else if(datauser[0]['usertype'] == 'member'){
-       Navigator.push(context, MaterialPageRoute(builder: (context) => Memberpage(email: email)));
+       Navigator.push(context, MaterialPageRoute(builder: (context) => Memberpage(email: email, address: address, userid: userid)));
        
      }
      setState(() {
        email = datauser[0]['email'];
        userid = datauser[0]['userid'];
+       address = datauser[0]['address'];
+      
      });
    }
    return datauser;
@@ -258,8 +261,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
                 fontFamily: "pacifico",
-              ),
-              
+               ),
               ),
             ),
             
@@ -269,7 +271,7 @@ class _MyHomePageState extends State<MyHomePage> {
          
           new Container(
             child: new Text("   "
-   
+
             ),
           ),
           new Container(
@@ -317,8 +319,6 @@ class Adminpage extends StatelessWidget {
       ),
       body: Column(
         children: <Widget>[
-          
-
           new Container(
             child: new Text("  ",
                
@@ -380,15 +380,6 @@ class Adminpage extends StatelessWidget {
                
               ),
           ),
-          new Container(
-
-          )
-
-
-          
-          
-          
-
         ]
         
         
@@ -398,9 +389,10 @@ class Adminpage extends StatelessWidget {
   }
 }
 class Memberpage extends StatelessWidget {
-
-Memberpage({this.email});
+Memberpage({this.email, this.address, this.userid});
 final String email;
+final String address;
+final String userid;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -457,7 +449,7 @@ final String email;
               
                onPressed: (){
                  getdata();
-                 Navigator.push(context, MaterialPageRoute(builder: (context) => Displayhusky()));
+                 Navigator.push(context, MaterialPageRoute(builder: (context) => Displayhusky(userid: userid)));
                },
                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
                color: Colors.grey,
@@ -496,7 +488,7 @@ final String email;
               
                onPressed: (){
                  getdatapom();
-                 Navigator.push(context, MaterialPageRoute(builder: (context) => Displaypom()));
+                 Navigator.push(context, MaterialPageRoute(builder: (context) => Displaypom(userid: userid)));
                },
                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
                color: Colors.grey,
@@ -535,7 +527,7 @@ final String email;
               
                onPressed: (){
                  getdatagolden();
-                 Navigator.push(context, MaterialPageRoute(builder: (context) => Displaygolden()));
+                 Navigator.push(context, MaterialPageRoute(builder: (context) => Displaygolden(userid: userid)));
                },
                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
                color: Colors.grey,
@@ -565,7 +557,7 @@ final String email;
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              child: Text('Hi  $email 🖤 ',
+              child: Text('Hi  $email 🖤 '+ "  "+ address,
                style: TextStyle(
                 fontSize: 50.0,
                 fontWeight: FontWeight.bold,
@@ -584,9 +576,11 @@ final String email;
                 fontWeight: FontWeight.bold,
                 fontFamily: 'tangerine',
                 color: Colors.black54,
+                
               ),),
+              trailing: Icon(Icons.person),
               onTap: () {
-                Navigator.pop(context);
+                 Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfile(email: email,address: address, userid: userid)));
                 },
               )
             ),
@@ -602,7 +596,23 @@ final String email;
               ),
               trailing: Icon(Icons.navigate_next),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AddDogpage(userid: userid)));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AddDogpage(email: email, userid: userid,address: address )));
+              },
+            ),
+        ),
+         new Card (
+              child:ListTile(
+              title: Text('Inbox',
+              style: TextStyle(
+                fontSize: 40.0,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'tangerine',
+                color: Colors.black54,
+                ),
+              ),
+              trailing: Icon(Icons.inbox),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Inboxpage(userid: userid)));
               },
             ),
         ),
@@ -631,12 +641,19 @@ final String email;
 }
 
 
+
+
+
+
 class AddDogpage extends StatelessWidget {
 
 
-AddDogpage({this.userid});
+AddDogpage({this.userid, this.email, this.address});
 final String userid;
+final String email;
+final String address;
   
+
   @override
   Widget build(BuildContext context) {
 
@@ -674,7 +691,7 @@ final String userid;
           // ),
           new Center(
             
-            child: new Text("",
+            child: new Text(address,
                 style: TextStyle(
               ),
             ),
@@ -693,7 +710,7 @@ final String userid;
                   height: 120.0,
                   child: InkWell(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => Huskypage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => Huskypage(email: email, address: address, userid: userid)));
                     },
                   ),
                 ),
@@ -721,7 +738,7 @@ final String userid;
                   height: 120.0,
                   child: InkWell(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => Pomerpage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => Pomerpage(email:email, address: address, userid: userid)));
                     },
                   ),
                 ),
@@ -749,7 +766,7 @@ final String userid;
                   height: 120.0,
                   child: InkWell(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => Goldenpage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => Goldenpage(email: email, address: address, userid :userid)));
                     },
                   ),
                 ),
@@ -772,6 +789,10 @@ final String userid;
 }
 
 class Huskypage extends StatelessWidget {
+  Huskypage({this.email, this.address, this.userid});
+final String email;
+final String address;
+final String userid;
 
   final color = TextEditingController();
   final height = TextEditingController();
@@ -800,6 +821,9 @@ class Huskypage extends StatelessWidget {
         child: Column(
           
         children: <Widget>[
+          new Container(
+            child: Text(address + userid ),
+          ),
           new Container(
             padding: EdgeInsets.only(top:30),
             child: Center(child: Text("Husky",
@@ -866,7 +890,7 @@ class Huskypage extends StatelessWidget {
  
                onPressed: (){
                  insertdoghusky();
-                 Navigator.push(context, MaterialPageRoute(builder: (context) => Memberpage()));
+                 Navigator.push(context, MaterialPageRoute(builder: (context) => Memberpage(email: email, address: address, userid: userid)));
                  
                },
                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
@@ -895,17 +919,23 @@ class Huskypage extends StatelessWidget {
   }
   void insertdoghusky(){
     
-    var url="http://192.168.18.54/LoginAPI/registerdog.php";
+    var url="http://172.20.41.130/LoginAPI/registerdog.php";
     http.post(url, body: {
       
       "color": color.text,
-      "weight": weight.text,
       "height": height.text,
+      "weight": weight.text,
       "dogtype": dogtype.text,
+      "address": address,
+      "userreceiverid" : userid,
     });
   }
 }
 class Pomerpage extends StatelessWidget {
+  Pomerpage({this.email, this.address, this.userid});
+  final String userid;
+  final String email;
+  final String address;
 
   final color = TextEditingController();
   final height = TextEditingController();
@@ -935,6 +965,9 @@ class Pomerpage extends StatelessWidget {
         child: Column(
           
         children: <Widget>[
+          new Container(
+            child: Text(address),
+          ),
           new Container(
             padding: EdgeInsets.only(top:30),
             child: Center(child: Text("Pomeranian",
@@ -1001,7 +1034,7 @@ class Pomerpage extends StatelessWidget {
  
                onPressed: (){
                  insertdogpom();
-                 Navigator.push(context, MaterialPageRoute(builder: (context) => Memberpage()));
+                 Navigator.push(context, MaterialPageRoute(builder: (context) => Memberpage(email:email, address: address,userid: userid)));
                  
                },
                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
@@ -1030,12 +1063,14 @@ class Pomerpage extends StatelessWidget {
   }
    void insertdogpom(){
     
-    var url="http://192.168.18.54/LoginAPI/registerdogpom.php";
+    var url="http://172.20.41.130/LoginAPI/registerdogpom.php";
     http.post(url, body: {
       "color": color.text,
-      "weight": weight.text,
       "height": height.text,
+      "weight": weight.text,
       "dogtype": dogtype.text,
+      "address": address,
+      "userreceiverid" : userid,
     });
   }
 
@@ -1045,6 +1080,10 @@ class Pomerpage extends StatelessWidget {
 
 
 class Goldenpage extends StatelessWidget {
+  Goldenpage({this.email, this.address, this.userid});
+  final String userid;
+  final String email;
+  final String address;
 
   final color = TextEditingController();
   final height = TextEditingController();
@@ -1073,6 +1112,9 @@ class Goldenpage extends StatelessWidget {
         child: Column(
           
         children: <Widget>[
+          new Container(
+            child: Text(address),
+            ),
           new Container(
             padding: EdgeInsets.only(top:30),
             child: Center(child: Text("Golden Retriever",
@@ -1139,7 +1181,7 @@ class Goldenpage extends StatelessWidget {
  
                onPressed: (){
                  insertdoggolden();
-                 Navigator.push(context, MaterialPageRoute(builder: (context) => Memberpage()));
+                 Navigator.push(context, MaterialPageRoute(builder: (context) => Memberpage(email: email, address: address, userid: userid)));
                  
                },
                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
@@ -1168,16 +1210,16 @@ class Goldenpage extends StatelessWidget {
   }
    void insertdoggolden(){
     
-    var url="http://192.168.18.54/LoginAPI/registerdoggolden.php";
+    var url="http://172.20.41.130/LoginAPI/registerdoggolden.php";
     http.post(url, body: {
       "color": color.text,
-      "weight": weight.text,
       "height": height.text,
+      "weight": weight.text,
       "dogtype": dogtype.text,
+      "address": address,
+      "userreceiverid" : userid,
     });
   }
 
 
 }
-
-

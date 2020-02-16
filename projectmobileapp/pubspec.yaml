@@ -26,6 +26,9 @@ dependencies:
   cupertino_icons: ^0.1.2
   google_maps_flutter: ^0.5.21+15
   carousel_slider: ^1.3.0
+  geolocator: ^5.2.1
+  geocoder: ^0.2.1
+  location: ^2.3.5
 
 dev_dependencies:
   flutter_test:
@@ -61,6 +64,8 @@ flutter:
    - images/huskylogo.jpg
    - images/Pomeranianlogo.jpg
    - images/Goldentrieverlogo.jpg
+   - images/profileimage.jpg
+   - images/userimage.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
